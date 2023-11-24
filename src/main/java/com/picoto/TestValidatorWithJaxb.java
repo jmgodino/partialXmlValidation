@@ -35,26 +35,26 @@ public class TestValidatorWithJaxb {
 		TestValidatorWithJaxb tv = new TestValidatorWithJaxb();
 
 		XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-		XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(new FileInputStream("./test.xml"));
+		XMLStreamReader reader1 = xmlInputFactory.createXMLStreamReader(new FileInputStream("./test.xml"));
 
-		Validator validator2 = tv.initValidator("./test.xsd");
+		Validator validator1 = tv.initValidator("./test.xsd");
 		long ini = System.currentTimeMillis();
-		while (reader.hasNext()) {
-			if (reader.isStartElement()) {
-				if (reader.getName().getLocalPart().equals("address")) {
-					validator2.validate(new StAXSource(reader));
+		while (reader1.hasNext()) {
+			if (reader1.isStartElement()) {
+				if (reader1.getName().getLocalPart().equals("address")) {
+					validator1.validate(new StAXSource(reader1));
 				}
 			}
-			reader.next();
+			reader1.next();
 		}
 		long fin = System.currentTimeMillis();
 		System.out.println("Tiempo total validación por bloques: " + (fin - ini) + "ms");
 
-		Validator validator3 = tv.initValidator("./test.xsd");
-		XMLStreamReader reader3 = xmlInputFactory.createXMLStreamReader(new FileInputStream("./test.xml"));
+		Validator validator2 = tv.initValidator("./test.xsd");
+		XMLStreamReader reader2 = xmlInputFactory.createXMLStreamReader(new FileInputStream("./test.xml"));
 
 		ini = System.currentTimeMillis();
-		validator3.validate(new StAXSource(reader3));
+		validator2.validate(new StAXSource(reader2));
 
 		fin = System.currentTimeMillis();
 		System.out.println("Tiempo total validación única: " + (fin - ini) + "ms");
