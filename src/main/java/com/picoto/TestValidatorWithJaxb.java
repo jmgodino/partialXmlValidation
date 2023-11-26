@@ -20,15 +20,13 @@ public class TestValidatorWithJaxb {
 
 	private Validator initValidator(String xsdPath) throws SAXException, IOException {
 		SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		Source schemaFile = new StreamSource(getFile(xsdPath));
-		Schema schema = factory.newSchema(schemaFile);
+		Source schemaSource = new StreamSource(getFile(xsdPath));
+		Schema schema = factory.newSchema(schemaSource);
 		return schema.newValidator();
 	}
 
 	private InputStream getFile(String location) throws IOException {
-
 		return new FileInputStream(location);
-
 	}
 
 	public static void main(String args[]) throws Exception {
@@ -38,7 +36,7 @@ public class TestValidatorWithJaxb {
 		XMLStreamReader reader1 = xmlInputFactory.createXMLStreamReader(new FileInputStream("./test.xml"));
 
 		Validator validator1 = tv.initValidator("./test.xsd");
-		long ini = System.currentTimeMillis();
+		long ini = getCurrentTime();
 		while (reader1.hasNext()) {
 			if (reader1.isStartElement()) {
 				if (reader1.getName().getLocalPart().equals("address")) {
@@ -47,18 +45,26 @@ public class TestValidatorWithJaxb {
 			}
 			reader1.next();
 		}
-		long fin = System.currentTimeMillis();
-		System.out.println("Tiempo total validación por bloques: " + (fin - ini) + "ms");
+		long fin = getCurrentTime();
+		debug("Tiempo total validación por bloques: " + (fin - ini) + "ms");
 
 		Validator validator2 = tv.initValidator("./test.xsd");
 		XMLStreamReader reader2 = xmlInputFactory.createXMLStreamReader(new FileInputStream("./test.xml"));
 
-		ini = System.currentTimeMillis();
+		ini = getCurrentTime();
 		validator2.validate(new StAXSource(reader2));
 
-		fin = System.currentTimeMillis();
-		System.out.println("Tiempo total validación única: " + (fin - ini) + "ms");
+		fin = getCurrentTime();
+		debug("Tiempo total validación única: " + (fin - ini) + "ms");
 
+	}
+
+	private static long getCurrentTime() {
+		return System.currentTimeMillis();
+	}
+
+	private static void debug(String string) {
+		System.out.println(string);
 	}
 
 }
